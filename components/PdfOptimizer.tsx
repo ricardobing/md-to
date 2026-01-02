@@ -66,23 +66,33 @@ export default function PdfOptimizer() {
       }
 
       // Mostrar estadísticas
-      setResult({
-        original: file.size,
-        optimized: optimizationResult.size!,
-      })
+      if (optimizationResult.size && optimizationResult.originalSize) {
+        setResult({
+          original: optimizationResult.originalSize,
+          optimized: optimizationResult.size,
+        })
+      } else if (optimizationResult.size) {
+        setResult({
+          original: file.size,
+          optimized: optimizationResult.size,
+        })
+      }
 
-      // Descargar el PDF optimizado
-      const blob = new Blob([Buffer.from(optimizationResult.data!, 'base64')], { 
-        type: 'application/pdf' 
-      })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = file.name.replace('.pdf', '_optimized.pdf')
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
+      // Solo descargar si hay datos
+      if (optimizationResult.data) {
+        // Descargar el PDF optimizado
+        const blob = new Blob([Buffer.from(optimizationResult.data, 'base64')], { 
+          type: 'application/pdf' 
+        })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = file.name.replace('.pdf', '_optimized.pdf')
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      }
     } catch (err) {
       setError('Error al optimizar el PDF')
       console.error(err)
@@ -210,8 +220,11 @@ export default function PdfOptimizer() {
       {/* Nota sobre la optimización */}
       <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
         <p className="text-xs text-blue-700 dark:text-blue-300">
-          <strong>Nota:</strong> La optimización remueve metadatos innecesarios y comprime el contenido.
-          Los resultados varían según el PDF original.
+          <strong>Método de optimización:</strong> Se extrae el contenido del PDF y se regenera con compresión agresiva usando Chromium.
+          Los resultados varían según el tipo de PDF. PDFs ya optimizados mostrarán poca o ninguna reducción.
+        </p>
+        <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+          ⚠️ <strong>Nota:</strong> Se pierde formato complejo e imágenes. Ideal para PDFs de texto sin optimizar.
         </p>
       </div>
     </div>

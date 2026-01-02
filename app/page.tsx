@@ -51,8 +51,8 @@ export default function Home() {
             </div>
             <div className="ml-3">
               <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                <strong>Límites de Vercel:</strong> Archivos hasta 10MB, 1024MB RAM, timeout 10s (Hobby plan).
-                Para archivos más grandes, considera actualizar el plan.
+                <strong>Límites de Vercel:</strong> PDFs hasta 8MB, 1024MB RAM, timeout 10s (Hobby plan).
+                Optimización PDF usa Chromium (cold start ~3-5s). Para archivos más grandes, considera actualizar el plan.
               </p>
             </div>
           </div>
